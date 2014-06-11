@@ -234,6 +234,7 @@ if( !class_exists('Tribe_Template_Factory') ) {
 			elseif ( ! empty( $geographic_term ) ) {
 				TribeEvents::setNotice( 'event-search-no-results', sprintf( __( 'No results were found for events in or near <strong>"%s"</strong>.', 'tribe-events-calendar' ), esc_html($geographic_term) ) );
 			}
+			// @TODO remove use of $tribe->date
 			elseif ( ! empty( $tax_term ) && tribe_is_upcoming() && ( date('Y-m-d') === date('Y-m-d', strtotime($tribe->date) ) ) ) {
 				TribeEvents::setNotice( 'events-not-found', sprintf( __('No upcoming events listed under %s. Check out upcoming events for this category or view the full calendar.', 'tribe-events-calendar'), $tax_term ) );
 			}

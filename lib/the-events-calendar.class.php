@@ -14,18 +14,25 @@ if ( !class_exists( 'TribeEvents' ) ) {
 	* This is where all the magic happens, the unicorns run wild and the leprechauns use WordPress to schedule events.
 	*/
 	class TribeEvents {
+
+		// @TODO this is only used in eventbrite
 		const EVENTSERROROPT = '_tribe_events_errors';
+
 		const OPTIONNAME = 'tribe_events_calendar_options';
 		const OPTIONNAMENETWORK = 'tribe_events_calendar_network_options';
 		const TAXONOMY = 'tribe_events_cat';
 		const POSTTYPE = 'tribe_events';
 		const VENUE_POST_TYPE = 'tribe_venue';
 		const ORGANIZER_POST_TYPE = 'tribe_organizer';
+
+		// @TODO remove - unused
 		const PLUGIN_DOMAIN = 'tribe-events-calendar';
 		const VERSION = '3.6.1';
 		const FEED_URL = 'http://tri.be/category/products/feed/';
 		const INFO_API_URL = 'http://wpapi.org/api/plugin/the-events-calendar.php';
 		const WP_PLUGIN_URL = 'http://wordpress.org/extend/plugins/the-events-calendar/';
+
+		// @TODO remove - unused
 		const PREFIX = 'events';
 
 		/**
@@ -37,6 +44,7 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		/**
 		 * Maybe display data wrapper
 		 * @var array
+		 * @TODO remove - unused
 		 */
 		private $show_data_wrapper = array( 'before' => true, 'after' => true );
 
@@ -84,10 +92,13 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			'exclude_from_search' => true
 		);
 
+		// @TODO remove - unused
 		protected $taxonomyLabels;
 
 		public static $tribeUrl = 'http://tri.be/';
 		public static $addOnPath = 'products/';
+
+		// @TODO remove - unused
 		public static $supportPath = 'support/';
 		public static $dotOrgSupportUrl = 'http://wordpress.org/tags/the-events-calendar';
 
@@ -101,19 +112,33 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		protected $upcomingSlug = 'upcoming';
 		public $daySlug = 'day';
 		public $todaySlug = 'today';
+
+		// @TODO trace this
 		protected $postExceptionThrown = false;
+
+		// @TODO remove - unused
 		protected $optionsExceptionThrown = false;
 		protected static $options;
 		protected static $networkOptions;
+
+		// @TODO - refactor displaying class var
 		public $displaying;
+
 		public $pluginDir;
 		public $pluginPath;
 		public $pluginUrl;
+
+		// @TODO trace this
 		public $pluginName;
+
+		// @TODO trace this
 		public $date;
 		protected $tabIndexStart = 2000;
 
+		// @TODO remove - unused
 		public $form_errors = array();
+
+		// @TODO remove - unused
 		public $form_message = array();
 
 		public $metaTags = array(
@@ -154,8 +179,12 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			'_OrganizerPhone'
 		);
 
+		// @TODO trace/remove - seems unused
 		public $states = array();
+		// @TODO refactor/remove
 		public $currentPostTimestamp;
+
+		// @TODO are these needed with date_i18n?
 		public $daysOfWeekShort;
 		public $daysOfWeek;
 		public $daysOfWeekMin;
@@ -230,11 +259,13 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			require_once $this->pluginPath.'public/template-tags/meta.php';
 
 			// Load Advanced Functions
+			// @TODO why are these "advanced"?
 			require_once $this->pluginPath.'public/advanced-functions/event.php';
 			require_once $this->pluginPath.'public/advanced-functions/venue.php';
 			require_once $this->pluginPath.'public/advanced-functions/organizer.php';
 
 			// Load Deprecated Template Tags
+			// @TODO document constant
 			if ( ! defined( 'TRIBE_DISABLE_DEPRECATED_TAGS' ) ) {
 				require_once $this->pluginPath.'public/template-tags/deprecated.php';
 			}
@@ -266,6 +297,7 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			require_once 'tribe-events-cache.class.php';
 
 			// App Shop
+			// @TODO document constant
 			if ( ! defined( 'TRIBE_HIDE_UPSELL' ) || TRIBE_HIDE_UPSELL !== true )
 				require_once 'tribe-app-shop.class.php';
 
@@ -295,6 +327,7 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		 * way for jQuery to maintain state in the dom. Also has a hook for filtering data
 		 * attributes for inclusion in the dom
 		 *
+		 * @TODO move to templates
 		 * @param  string $html
 		 * @return string
 		 */
@@ -330,6 +363,8 @@ if ( !class_exists( 'TribeEvents' ) ) {
 
 		/**
 		 * after_html_data_wrapper close out the persistant dom wrapper
+		 *
+		 * @TODO move to templates
 		 * @param  string $html
 		 * @return string
 		 */
@@ -361,7 +396,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 
 
 			add_filter( 'query_vars',		array( $this, 'eventQueryVars' ) );
-			//add_filter( 'the_content', array($this, 'emptyEventContent' ), 1 );
 			add_filter( 'wp_title', array($this, 'maybeAddEventTitle' ), 10, 2 );
 			add_filter( 'bloginfo_rss',	array($this, 'add_space_to_rss' ) );
 			add_filter( 'post_updated_messages', array($this, 'updatePostMessage') );
