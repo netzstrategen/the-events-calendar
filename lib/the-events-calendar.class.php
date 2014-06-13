@@ -1607,9 +1607,9 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			}
 
 			if ( current_user_can('edit_others_tribe_venues') ) {
-				$venues = $this->get_venue_info( null, null, array('post_status' => array('publish', 'draft', 'private', 'pending'), 'post__not_in' => $my_venue_ids) );
+				$venues = $this->get_venue_info( null, null, array('post_status' => array('publish', 'draft', 'private', 'pending'), 'author__not_in' => $current_user->ID ) );
 			} else {
-				$venues = $this->get_venue_info( null, null, array('post_status' => 'publish', 'post__not_in' => $my_venue_ids) );
+				$venues = $this->get_venue_info( null, null, array('post_status' => 'publish', 'author__not_in' => $current_user->ID ) );
 			}
 			if ( $venues || $my_venues ) {
 				echo '<select class="chosen venue-dropdown" name="' . esc_attr( $name ) . '" id="saved_venue">';
@@ -1664,9 +1664,9 @@ if ( !class_exists( 'TribeEvents' ) ) {
 
 
 			if ( current_user_can('edit_others_tribe_organizers') ) {
-				$organizers = $this->get_organizer_info( null, null, array('post_status' => array('publish', 'draft', 'private', 'pending'), 'post__not_in' => $my_organizer_ids) );
+				$organizers = $this->get_organizer_info( null, null, array('post_status' => array('publish', 'draft', 'private', 'pending'), 'author__not_in' => $current_user->ID) );
 			} else {
-				$organizers = $this->get_organizer_info( null, null, array('post_status' => 'publish', 'post__not_in' => $my_organizer_ids) );
+				$organizers = $this->get_organizer_info( null, null, array('post_status' => 'publish', 'author__not_in' => $current_user->ID) );
 			}
 			if ( $organizers || $my_organizers ) {
 				echo '<select class="chosen organizer-dropdown" name="' . esc_attr( $name ) . '" id="saved_organizer">';

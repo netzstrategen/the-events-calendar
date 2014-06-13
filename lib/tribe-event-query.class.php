@@ -319,11 +319,14 @@ if ( !class_exists( 'TribeEventsQuery' ) ) {
 				$query->set( 'posts_per_page', (int) tribe_get_option( 'postsPerPage', 10 ) );
 			}
 
+
 			// hide upcoming events from query (only not in admin)
-			if ( $query->tribe_is_event_query && $query->get( 'hide_upcoming' ) ) {
-				$hide_upcoming_ids = self::getHideFromUpcomingEvents();
-				if ( !empty( $hide_upcoming_ids ) )
-					$query->set( 'post__not_in', $hide_upcoming_ids );
+			if ( ! ( is_admin() && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) && ( $query->tribe_is_event_query && $query->get( 'hide_upcoming' ) ) ) {
+				$meta_query[] = array(
+					'key' => '_EventHideFromUpcoming',
+					'value' => 'see wp trac bug #23268',
+					'compare' => 'NOT EXISTS'
+				);
 			}
 
 			if ( $query->tribe_is_event_query && !empty( $meta_query ) ) {
@@ -344,6 +347,7 @@ if ( !class_exists( 'TribeEventsQuery' ) ) {
 			}
 
 			// if is in the admin remove the event date & upcoming filters, unless is an ajax call
+			// @todo don't set these in the admin in the first place
 			global $current_screen;
 			if ( is_admin() && $query->tribe_is_event_query && !empty( $current_screen->id ) && $current_screen->id == 'edit-' . TribeEvents::POSTTYPE ) {
 				if ( ( !defined( 'DOING_AJAX' ) ) || ( defined( 'DOING_AJAX' ) && !( DOING_AJAX ) ) ) {
@@ -354,7 +358,6 @@ if ( !class_exists( 'TribeEventsQuery' ) ) {
 					//remove_filter( 'posts_distinct', array( __CLASS__, 'posts_distinct' ) );
 					remove_filter( 'posts_groupby', array( __CLASS__, 'posts_groupby' ) );
 					remove_filter( 'posts_orderby', array( __CLASS__, 'posts_orderby' ), 10, 2 );
-					$query->set( 'post__not_in', '' );
 
 					// set the default order for posts within admin lists
 					if ( !isset( $query->query['order'] ) ) {
@@ -652,28 +655,6 @@ if ( !class_exists( 'TribeEventsQuery' ) ) {
 		}
 
 		/**
-		 * Custom SQL to retrieve post_id list of events marked to be hidden from upcoming lists.
-		 *
-		 * @return array
-		 */
-		public static function getHideFromUpcomingEvents() {
-			global $wpdb;
-
-			$cache = new TribeEventsCache();
-			$cache_key = 'tribe-hide-from-upcoming-events';
-			$found = $cache->get( $cache_key, 'save_post' );
-			if ( is_array( $found ) ) {
-				return $found;
-			}
-
-			// custom sql to get ids of posts that hide_upcoming_ids
-			$hide_upcoming_ids = $wpdb->get_col( "SELECT {$wpdb->postmeta}.post_id FROM {$wpdb->postmeta} WHERE {$wpdb->postmeta}.meta_key = '_EventHideFromUpcoming' AND {$wpdb->postmeta}.meta_value = 'yes'" );
-			$hide_upcoming_ids = apply_filters( 'tribe_events_hide_from_upcoming_ids', $hide_upcoming_ids );
-			$cache->set( $cache_key, $hide_upcoming_ids, HOUR_IN_SECONDS, 'save_post' );
-			return $hide_upcoming_ids;
-		}
-
-		/**
 		 * Gets the event counts for individual days.
 		 *
 		 * @param array $args
@@ -688,7 +669,6 @@ if ( !class_exists( 'TribeEventsQuery' ) ) {
 				'start_date' => tribe_event_beginning_of_day( $date ),
 				'end_date' => tribe_event_end_of_day( $date ),
 				'display_type' => 'daily',
-				'hide_upcoming_ids' => null,
 			);
 			$args = wp_parse_args( $args, $defaults );
 

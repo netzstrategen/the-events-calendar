@@ -16,7 +16,6 @@ if( !class_exists('Tribe_Events_Month_Template')){
 	 * Grid view template class
 	 */
 	class Tribe_Events_Month_Template extends Tribe_Template_Factory {
-		private static $hide_upcoming_ids;
 		private static $today;
 		private static $current_month;
 		private static $current_year;
@@ -146,7 +145,6 @@ if( !class_exists('Tribe_Events_Month_Template')){
 			$count_args['eventDate'] = date( 'Y-m', strtotime( $date ) );
 			$count_args['start_date'] = tribe_event_beginning_of_day( $date );
 			$count_args['end_date'] = tribe_event_end_of_day( date('Y-m-t', strtotime( $date ) ) );
-			$count_args['hide_upcoming_ids'] = self::$hide_upcoming_ids;
 			$count_args['post_status'] = is_user_logged_in() ? array( 'publish', 'private' ) : 'publish';
 			$count_args['tribeHideRecurrence'] = false;
 
@@ -219,9 +217,6 @@ if( !class_exists('Tribe_Events_Month_Template')){
 			$first_day_of_month = date( 'Y-m-01', strtotime( $requested_date ) );
 
 			do_action('log', 'eventDate', 'tribe-events-query', $first_day_of_month);
-
-			// get all upcoming ids to hide so we're not querying 31 times
-			self::$hide_upcoming_ids = TribeEventsQuery::getHideFromUpcomingEvents();
 
 			$year = date('Y', strtotime($first_day_of_month));
 			$month = date('m', strtotime($first_day_of_month));
