@@ -852,6 +852,7 @@ if ( !class_exists( 'TribeEventsQuery' ) ) {
 				$cache->set( $cache_key, $result, TribeEventsCache::NON_PERSISTENT, 'save_post' );
 			}
 
+			// @todo don't need all this, just return what's requested
 			if ( ! empty( $result->posts ) ) {
 				if ( $full ) {
 					return $result;

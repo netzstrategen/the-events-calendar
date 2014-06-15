@@ -4593,6 +4593,7 @@ if ( !class_exists( 'TribeEvents' ) ) {
 
 			$hash = $query->query_vars;
 
+			// @todo what is this section about
 			$hash['paged']      = null;
 			$hash['start_date'] = null;
 			$hash_str           = md5( maybe_serialize( $hash ) );
