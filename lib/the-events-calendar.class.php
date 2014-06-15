@@ -44,7 +44,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		/**
 		 * Maybe display data wrapper
 		 * @var array
-		 * @TODO remove - unused
 		 */
 		private $show_data_wrapper = array( 'before' => true, 'after' => true );
 
@@ -95,7 +94,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			'exclude_from_search' => true
 		);
 
-		// @TODO remove - unused
 		protected $taxonomyLabels;
 
 		public static $tribeUrl = 'http://tri.be/';
@@ -187,7 +185,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		// @TODO refactor/remove
 		public $currentPostTimestamp;
 
-		// @TODO are these needed with date_i18n?
 		public $daysOfWeekShort;
 		public $daysOfWeek;
 		public $daysOfWeekMin;
