@@ -37,6 +37,12 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		protected $notices = array();
 
 		/**
+		 * Maybe display data wrapper
+		 * @var array
+		 */
+		private $show_data_wrapper = array( 'before' => true, 'after' => true );
+
+		/**
 		 * Args for the event post type
 		 * @var array
 		 * @todo move this to init() so it can be filtered
@@ -82,6 +88,8 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			'map_meta_cap' => true,
 			'exclude_from_search' => true
 		);
+
+		protected $taxonomyLabels;
 
 		public static $tribeUrl = 'http://tri.be/';
 		public static $addOnPath = 'products/';
