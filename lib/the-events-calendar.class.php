@@ -73,6 +73,8 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			'exclude_from_search' => true
 		);
 
+		protected $taxonomyLabels;
+
 		/**
 		 * Args for organizer post type
 		 * @var array
@@ -88,8 +90,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			'map_meta_cap' => true,
 			'exclude_from_search' => true
 		);
-
-		protected $taxonomyLabels;
 
 		public static $tribeUrl = 'http://tri.be/';
 		public static $addOnPath = 'products/';
@@ -174,7 +174,7 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		public $daysOfWeekMin;
 		public $monthsFull;
 		public $monthsShort;
-		
+
 		public $singular_venue_label;
 		public $plural_venue_label;
 
@@ -267,7 +267,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			require_once 'tribe-events-bar.class.php';
 			require_once 'tribe-the-events-calendar-import.class.php';
 			require_once 'tribe-support.class.php';
-			//require_once( 'tribe-debug-bar.class.php' );
 			require_once 'tribe-amalgamator.php';
 			require_once 'tribe-events-update.class.php';
 
@@ -406,16 +405,17 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			add_action( 'admin_menu', array( $this, 'addEventBox' ) );
 			add_action( 'wp_insert_post', array( $this, 'addPostOrigin' ), 10, 2 );
 			add_action( 'save_post_'.self::POSTTYPE, array( $this, 'addEventMeta' ), 15, 2 );
+			add_action( 'save_post', array( $this, 'update_earliest_latest' ), 20 );
 			add_action( 'save_post_'.self::VENUE_POST_TYPE, array( $this, 'save_venue_data' ), 16, 2 );
 			add_action( 'save_post_'.self::ORGANIZER_POST_TYPE, array( $this, 'save_organizer_data' ), 16, 2 );
 			add_action( 'save_post', array( $this, 'addToPostAuditTrail' ), 10, 2 );
 			add_action( 'publish_'.self::POSTTYPE, array( $this, 'publishAssociatedTypes'), 25, 2 );
+			add_action( 'delete_post', array( $this, 'maybe_rebuild_earliest_latest' ) );
 			add_action( 'parse_query', array( $this, 'setDisplay' ), 51, 0);
 			add_action( 'tribe_events_post_errors', array( 'TribeEventsPostException', 'displayMessage' ) );
 			add_action( 'tribe_settings_top', array( 'TribeEventsOptionsException', 'displayMessage') );
 			add_action( 'admin_enqueue_scripts', array( $this, 'addAdminScriptsAndStyles' ) );
 			add_filter( 'tribe_events_register_event_type_args', array( $this, 'setDashicon' ) );
-			add_action( 'plugins_loaded', array( $this, 'accessibleMonthForm'), -10 );
 			add_action( "trash_" . TribeEvents::VENUE_POST_TYPE, array($this, 'cleanupPostVenues'));
 			add_action( "trash_" . TribeEvents::ORGANIZER_POST_TYPE, array($this, 'cleanupPostOrganizers'));
 			add_action( "wp_ajax_tribe_event_validation", array($this,'ajax_form_validate') );
@@ -426,10 +426,9 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			// Load organizer and venue editors
 			add_action( 'admin_menu', array( $this, 'addVenueAndOrganizerEditor' ) );
 			add_action( 'tribe_venue_table_top', array( $this, 'displayEventVenueDropdown' ) );
-			add_action( 'tribe_organizer_table_top', array( $this, 'displayEventOrganizerDropdown' ) );			
+			add_action( 'tribe_organizer_table_top', array( $this, 'displayEventOrganizerDropdown' ) );
 
 			add_action( 'template_redirect', array( $this, 'template_redirect') );
-			add_filter( 'tribe_events_promo_banner', array( $this, 'promo_banner_prevent_bot') );
 
 			// @TODO - do we need this functionality?
 			if( defined('TRIBE_SHOW_EVENT_AUDITING') && TRIBE_SHOW_EVENT_AUDITING )
@@ -628,13 +627,11 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			self::debug(sprintf(__('Initializing Tribe Events on %s','tribe-events-calendar'),date('M, jS \a\t h:m:s a')));
 			$this->maybeMigrateDatabase();
 			$this->maybeSetTECVersion();
-			// TribeEventsQuery::deregister();
 		}
 
 		/**
 		 * Upgrade the database if an older version of events was installed.
 		 *
-		 * @since 2.0.1
 		 * @TODO design a better upgrade system, move it out of this class
 		 */
 		public function maybeMigrateDatabase( ) {
@@ -686,7 +683,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		/**
 		 * Set the Calendar Version in the options table if it's not already set.
 		 *
-		 * @since 2.0.1
 		 * @TODO move this to a new upgrade system
 		 */
 		public function maybeSetTECVersion() {
@@ -702,10 +698,8 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		/**
 		 * Check add-ons to make sure they are supported by currently running TEC version.
 		 *
-		 * @todo Ideally each plugin should do this itself. Not a huge deal.
-		 * @since 2.0.5
-		 * @author Paul Hughes
 		 * @return void
+		 * @todo Ideally each plugin should do this itself. Not a huge deal.
 		 */
 		public function checkAddOnCompatibility() {
 			// Variable for storing output to admin notices.
@@ -771,8 +765,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		/**
 		 * Init the settings API and add a hook to add your own setting tabs
 		 *
-		 * @since 2.0.5
-		 * @author jkudish
 		 * @return void
 		 */
 		public function initOptions() {
@@ -798,8 +790,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		/**
 		 * Create setting tabs
 		 *
-		 * @since 2.0.5
-		 * @author jkudish
 		 * @return void
 		 * @todo move this to the settings class
 		 */
@@ -970,7 +960,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		 * @param string|bool $data Optional data to display
 		 * @param string $format Optional format (log|warning|error|notice)
 		 * @return void
-		 * @author Peter Chester
 		 * @todo move this to a debug class
 		 */
 		public static function debug( $title, $data = false, $format = 'log' ) {
@@ -984,7 +973,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		 * @param string|bool $data - optional data to display
 		 * @param string $format - optional format (log|warning|error|notice)
 		 * @return void
-		 * @author Peter Chester
 		 * @todo move this to a debug class
 		 */
 		public function renderDebug( $title, $data = false, $format = 'log' ) {
@@ -1509,7 +1497,7 @@ if ( !class_exists( 'TribeEvents' ) ) {
 				6 => sprintf(__( '%s published.','tribe-events-calendar'), $this->singular_venue_label),
 				7 => sprintf(__( '%s saved.','tribe-events-calendar'), $this->singular_venue_label),
 				8 => sprintf(__( '%s submitted.','tribe-events-calendar'), $this->singular_venue_label),
-				9 => sprintf( __('%s scheduled for: <strong>%2$s</strong>.', 'tribe-events-calendar'), $this->singular_venue_label, 
+				9 => sprintf( __('%s scheduled for: <strong>%2$s</strong>.', 'tribe-events-calendar'), $this->singular_venue_label,
 				// translators: Publish box date format, see http://php.net/date
 				date_i18n( __( 'M j, Y @ G:i' , 'tribe-events-calendar'), strtotime( $post->post_date ) ) ),
 				10 => sprintf(__( '%s draft updated.','tribe-events-calendar'), $this->singular_venue_label),
@@ -1526,7 +1514,7 @@ if ( !class_exists( 'TribeEvents' ) ) {
 				6 => sprintf(__( '%s published.','tribe-events-calendar'), $this->singular_organizer_label),
 				7 => sprintf(__( '%s saved.','tribe-events-calendar'), $this->singular_organizer_label),
 				8 => sprintf(__( '%s submitted.','tribe-events-calendar'), $this->singular_organizer_label),
-				9 => sprintf( __('%s scheduled for: <strong>%2$s</strong>.', 'tribe-events-calendar'), $this->singular_organizer_label, 
+				9 => sprintf( __('%s scheduled for: <strong>%2$s</strong>.', 'tribe-events-calendar'), $this->singular_organizer_label,
 				// translators: Publish box date format, see http://php.net/date
 				date_i18n( __( 'M j, Y @ G:i' , 'tribe-events-calendar'), strtotime( $post->post_date ) ) ),
 				10 => sprintf(__( '%s draft updated.','tribe-events-calendar'), $this->singular_organizer_label),
@@ -1538,6 +1526,7 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		/**
 		 * Adds the submenu items for editing the Venues and Organizers.
 		 * Used to be a PRO only feature, but as of 3.0, it is part of Core.
+		 *
 		 *
 		 * @return void
 		 * @todo move to an admin class
@@ -1600,7 +1589,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		 * helper function for displaying the saved venue dropdown
 		 * Used to be a PRO only feature, but as of 3.0, it is part of Core.
 		 *
-		 * @since 2.0
 		 * @param mixed $current the current saved venue
 		 * @param string $name the name value for the field
 		 * @todo move somewhere else
@@ -1657,7 +1645,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		 * helper function for displaying the saved organizer dropdown
 		 * Used to be a PRO only feature, but as of 3.0, it is part of Core.
 		 *
-		 * @since 2.0
 		 * @param mixed $current the current saved venue
 		 * @param string $name the name value for the field
 		 */
@@ -1824,7 +1811,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		 * Modify the post type args to set Dashicon if we're in WP 3.8+
 		 *
 		 * @return array post type args
-		 * @author Jessica Yazbek
 		 * @todo move to an admin class
 		 **/
 		function setDashicon( $postTypeArgs ) {
@@ -2897,14 +2883,80 @@ if ( !class_exists( 'TribeEvents' ) ) {
 
 			// Add this hook back in
 			add_action( 'save_post_'.self::POSTTYPE, array( $this, 'addEventMeta' ), 15, 2 );
+		}
 
+		/**
+		 * Intelligently updates our record of the earliest start date/latest event date in
+		 * the system. If the existing earliest/latest values have not been superseded by the new post's
+		 * start/end date then no update takes place.
+		 *
+		 * This is deliberately hooked into save_post, rather than save_post_tribe_events, to avoid issues
+		 * where the removal/restoration of hooks within addEventMeta() etc might stop this method from
+		 * actually being called (relates to a core WP bug).
+		 */
+		public function update_earliest_latest( $post_id ) {
+			// Bail if this isn't an event
+			if ( TribeEvents::POSTTYPE !== get_post_type( $post_id ) ) return;
+
+			// If the event isn't going to be visible (perhaps it's been trashed) rebuild dates and bail
+			if ( ! in_array( get_post_status( $post_id ), array( 'publish', 'private', 'protected' ) ) ) {
+				$this->rebuild_earliest_latest();
+				return;
+		}
+
+			$current_min = tribe_events_earliest_date();
+			$current_max = tribe_events_latest_date();
+
+			$event_start = tribe_get_start_date( $post_id, false, TribeDateUtils::DBDATETIMEFORMAT );
+			$event_end = tribe_get_end_date( $post_id, false, TribeDateUtils::DBDATETIMEFORMAT );
+
+			if ( $current_min > $event_start ) tribe_update_option( 'earliest_date', $event_start );
+			if ( $current_max < $event_end ) tribe_update_option( 'latest_date', $event_end );
+		}
+
+		/**
+		 * Fires on delete_post and decides whether or not to rebuild our record or
+		 * earliest/latest event dates (which will be done when deleted_post fires,
+		 * so that the deleted event is removed from the db before we recalculate).
+		 *
+		 * @param $post_id
+		 */
+		public function maybe_rebuild_earliest_latest( $post_id ) {
+			if ( self::POSTTYPE === get_post_type( $post_id ) )
+				add_action( 'deleted_post', array( $this, 'rebuild_earliest_latest' ) );
+		}
+
+		/**
+		 * Determine the earliest start date and latest end date currently in the database
+		 * and store those values for future use.
+		 */
+		public function rebuild_earliest_latest() {
+			global $wpdb;
+			remove_action( 'deleted_post', array( $this, 'rebuild_earliest_latest' ) );
+
+			$earliest = strtotime( $wpdb->get_var( $wpdb->prepare("
+				SELECT MIN(meta_value) FROM $wpdb->postmeta
+				JOIN $wpdb->posts ON post_id = ID
+				WHERE meta_key = '_EventStartDate'
+				AND post_type = '%s'
+				AND post_status IN ('publish', 'private', 'protected')
+			", self::POSTTYPE ) ) );
+
+			$latest = strtotime( $wpdb->get_var( $wpdb->prepare("
+				SELECT MAX(meta_value) FROM $wpdb->postmeta
+				JOIN $wpdb->posts ON post_id = ID
+				WHERE meta_key = '_EventEndDate'
+				AND post_type = '%s'
+				AND post_status IN ('publish', 'private', 'protected')
+			", self::POSTTYPE ) ) );
+
+			if ( $earliest ) tribe_update_option( 'earliest_date', date( TribeDateUtils::DBDATETIMEFORMAT, $earliest ) );
+			if ( $latest ) tribe_update_option( 'latest_date', date( TribeDateUtils::DBDATETIMEFORMAT, $latest ) );
 		}
 
 		/**
 		 * Adds the '_<posttype>Origin' meta field for a newly inserted events-calendar post.
 		 *
-		 * @since 2.1
-		 * @author paulhughes
 		 * @param int $postId, the post ID
 		 * @param WP_Post $post, the post object
 		 * @return void
@@ -2945,8 +2997,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		/**
 		 * Adds to the '_<posttype>AuditTrail' meta field for an events-calendar post.
 		 *
-		 * @since 2.1
-		 * @author paulhughes
 		 * @param int $postId, the post ID
 		 * @param WP_Post $post, the post object
 		 * @return void
@@ -2976,8 +3026,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		/**
 		 * Publishes associated venue/organizer when an event is published
 		 *
-		 * @since 2.0.6
-		 * @author nciske
 		 * @param int $postID, the post ID
 		 * @param WP_Post $post, the post object
 		 * @return void
@@ -3214,8 +3262,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			}else{
 				$post = $event;
 
-				//echo $post->ID;
-
 				if($post->ID){
 					$saved = true;
 				}else{
@@ -3280,7 +3326,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 				foreach ( $defaults as $tag ) {
 
 					$cleaned_tag = str_replace('_Venue','',$tag);
-					//echo $tag.' | '.$cleaned_tag.'<BR>';
 
 					$var_name = '_Venue'.$cleaned_tag;
 
@@ -3777,9 +3822,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 				)
 			);
 			// TODO: Finish rewriting this query to be WP_QUERY based
-			// TribeEventsQuery::deregister();
-			// $event_link = new WP_Query($args);
-			// print_r($event_link);
 
 			$results = $wpdb->get_row($eventsQuery, OBJECT);
 			if(is_object($results)) {
@@ -3947,7 +3989,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		/**
 		 * Add the buttons/dropdown to the admin toolbar
 		 *
-		 * @since 2.0.7
 		 * @return null
 		 * @todo add to an admin class
 		 */
@@ -4053,8 +4094,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		/**
 		 * Displays activation welcome admin notice.
 		 *
-		 * @since 2.0.8
-		 * @author PaulHughes01
 		 *
 		 * @return void
 		 */
@@ -4069,8 +4108,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		/**
 		 * Resets the option such that the activation message is again displayed on reactivation.
 		 *
-		 * @since 2.0.8
-		 * @author PaulHughes01
 		 *
 		 * @return void
 		 */
@@ -4082,8 +4119,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		/**
 		 * Displays the View Calendar link at the top of the Events list in admin.
 		 *
-		 * @since 2.0.8
-		 * @author PaulHughes01
 		 *
 		 * @return void
 		 * @todo do we need this?
@@ -4098,8 +4133,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		/**
 		 * Set the menu-edit-page to default display the events-related items.
 		 *
-		 * @since 2.0.8
-		 * @author PaulHughes01
 		 *
 		 * @return void
 		 * @todo move to an admin class
@@ -4197,8 +4230,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		 * @param string $link The current link.
 		 * @param string|null $date The date passed.
 		 * @return string The modified link.
-		 * @author Paul Hughes
-		 * @since 3.0
 		 * @todo move closer to permalinks functionality
 		 */
 		public function add_empty_date_dayview_link( $link, $date ) {
@@ -4238,8 +4269,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		 *
 		 * @param array $views The current array of views registered to the tribe bar.
 		 * @return array The views registered with day view added.
-		 * @author Daniel Dvorkin
-		 * @since 3.0
 		 * @todo move to a tribe bar class
 		 */
 		public function setup_dayview_in_bar( $views ) {
@@ -4315,8 +4344,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		/**
 		 * Removes views that have been deselected in the Template Settings as hidden from the view array.
 		 *
-		 * @since 3.0
-		 * @author PaulHughes01
 		 *
 		 * @param array $views The current views array.
 		 * @param bool $visible
@@ -4402,7 +4429,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		 * The List View AJAX handler.
 		 *
 		 * @return void
-		 * @since 3.0
 		 * @todo move to the appropriate template class
 		 */
 		function list_ajax_call() {
@@ -4493,10 +4519,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		 * @param $insert_array
 		 * @return array
 		 *
-		 * @author codearachnid
-		 * @author Peter Chester
-		 * @since 3.0
-		 *
 		 * @todo move to a templates / helper class
 		 */
 		public static function array_insert_after_key( $key, $source_array, $insert_array ) {
@@ -4514,8 +4536,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		 * The Calendar View AJAX Handler.
 		 *
 		 * @return void
-		 * @since 3.0
-		 * @todo rename
 		 * @todo move to the appropriate template class
 		 */
 		function calendar_ajax_call() {
@@ -4560,8 +4580,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		 * This loads up the day view shard with all the appropriate events for the day
 		 *
 		 * @return void
-		 * @author Timothy Wood
-		 * @since 3.0
 		 * @todo move to the appropriate template class
 		 */
 		function wp_ajax_tribe_event_day(){
@@ -4620,8 +4638,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		 * be run.
 		 *
 		 * @return void
-		 * @author Paul Hughes
-		 * @since 3.0
 		 * @todo integrate this with an update/upgrade class
 		 */
 		public function checkSuiteIfJustUpdated() {

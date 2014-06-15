@@ -95,10 +95,8 @@ if (!class_exists('TribeEventsTemplates')) {
 					add_action( 'loop_start', array(__CLASS__, 'setup_ecp_template' ) );
 				}
 
-				$template = locate_template( tribe_get_option( 'tribeEventsTemplate', 'default' ) == 'default' ? 'page.php' : tribe_get_option( 'tribeEventsTemplate', 'default' ) );
-				if ( $template ==  '' ) {
-					$template = get_index_template();
-				}
+				//Add page template class to body_class()
+				add_filter( 'body_class', array( __CLASS__, 'page_template_body_class' ) );
 
 				// remove singular body class if sidebar-page.php
 				if( $template == get_stylesheet_directory() . '/sidebar-page.php' ) {
@@ -115,7 +113,6 @@ if (!class_exists('TribeEventsTemplates')) {
 		 *
 		 * @param bool $class
 		 * @return void
-		 * @since 3.0
 		 **/
 		public static function instantiate_template_class( $class = false ) {
 			if ( tribe_is_event_query() ) {
@@ -129,10 +126,30 @@ if (!class_exists('TribeEventsTemplates')) {
 		}
 
 		/**
+		 * Include page template body class
+		 * @param array $classes List of classes to filter
+		 *
+		 * @return mixed
+		 */
+		public static function page_template_body_class( $classes ) {
+		
+			$template = locate_template( tribe_get_option( 'tribeEventsTemplate', 'default' ) == 'default' ? 'page.php' : tribe_get_option( 'tribeEventsTemplate', 'default' ) );
+			if ( $template ==  '' ) {
+				$template = get_index_template();
+			}	
+				
+			$template_filename = explode( '/', $template );
+			$template_filename = end( $template_filename );
+			
+			$classes[] = 'page-template-' . sanitize_title( $template_filename );
+			
+            return $classes;
+        }
+
+		/**
 		 * add body class when default events template is used
 		 *
 		 * @return void
-		 * @author Jessica Yazbek
 		 **/
 		public static function default_events_template_body_class( $classes )
 		{
@@ -169,7 +186,6 @@ if (!class_exists('TribeEventsTemplates')) {
 		 * Add the theme to the body class
 		 *
 		 * @return array $classes
-		 * @author Jessica Yazbek
 		 **/
 		public static function theme_body_class( $classes ) {
 			$child_theme = get_option( 'stylesheet' );
@@ -229,7 +245,6 @@ if (!class_exists('TribeEventsTemplates')) {
 		 * Spoof the global post just once
 		 *
 		 * @return void
-		 * @since 3.0
 		 **/
 		public static function spoof_the_post() {
 			$GLOBALS['post'] = self::spoofed_post();
@@ -435,14 +450,13 @@ if (!class_exists('TribeEventsTemplates')) {
 		 *
 		 * @param WP_Query $query
 		 * @return WP_Query
-		 * @since 2.1
 		 */
 		public static function showInLoops( $query ) {
 
 			if ( ! is_admin() && tribe_get_option( 'showInLoops' ) && ( $query->is_home() || $query->is_tag ) && empty( $query->query_vars['post_type'] ) && false == $query->query_vars['suppress_filters'] ) {
 
+				// @todo remove
 				// 3.3 know-how for main query check
-				// if (method_exists($query, 'is_main_query')) {
 				if ( self::is_main_loop( $query ) ) {
 					self::$isMainLoop = true;
 					$post_types = array('post', TribeEvents::POSTTYPE);
@@ -465,7 +479,6 @@ if (!class_exists('TribeEventsTemplates')) {
 		 *  - plugin_path
 		 *  - disable_view_check - bypass the check to see if the view is enabled
 		 * @return template path
-		 * @author Matt Wiebe
 		 **/
 		public static function getTemplateHierarchy( $template, $args = array() ) {
 			if ( ! is_array( $args ) ) {

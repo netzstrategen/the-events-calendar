@@ -4,9 +4,6 @@
  *
  * The parent class for managing the view methods in core and addons
  *
- * @since  3.0
- * @author tim@imaginesimplicity.com
- * @author jessica@
  */
 
 if ( !defined('ABSPATH') )
@@ -63,7 +60,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 * Run include packages, set up hooks
 		 *
 		 * @return void
-		 * @since 3.0
 		 **/
 		public function __construct() {
 			$this->hooks();
@@ -74,7 +70,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 * Set up hooks for this template
 		 *
 		 * @return void
-		 * @since 3.0
 		 **/
 		protected function hooks() {
 
@@ -119,7 +114,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 * Manage the asset packages defined for this template
 		 *
 		 * @return void
-		 * @since 3.0
 		 **/
 		protected function asset_packages()	{
 			foreach ($this->asset_packages as $asset_package) {
@@ -132,7 +126,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 *
 		 * @param array $classes
 		 * @return void
-		 * @since 3.0
 		 **/
 		public function body_class($classes = array() )	{
 
@@ -161,8 +154,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 * Add classes to events on this view
 		 *
 		 * @return array
-		 * @author Jessica Yazbek
-		 * @since 3.0
 		 **/
 		public function event_classes( $classes ) {
 		   return $classes;
@@ -172,7 +163,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 * Setup meta display in this template
 		 *
 		 * @return void
-		 * @since 3.0
 		 **/
 		public function setup_meta() {
 
@@ -200,7 +190,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 * Set up the notices for this template
 		 *
 		 * @return void
-		 * @since 3.0
 		 **/
 		public function set_notices() {
 			global $wp_query;
@@ -257,7 +246,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 * Setup the view, query hijacking, etc. This happens right before the view file is included
 		 *
 		 * @return void
-		 * @since 3.0
 		 **/
 		public function setup_view() {
 
@@ -274,7 +262,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 * Echo open tags for wrapper around view
 		 *
 		 * @return void
-		 * @since
 		 **/
 		public function view_wrapper_open() {
 			echo '<div id="tribe-events-content-wrapper" class="tribe-clearfix">';
@@ -284,7 +271,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 * Output an input to store the hash for the current query
 		 *
 		 * @return void
-		 * @since 3.0
 		 **/
 		public function add_input_hash() {
 			echo '<input type="hidden" id="tribe-events-list-hash" value="">';
@@ -294,7 +280,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 * Echo open tags for wrapper around view
 		 *
 		 * @return void
-		 * @since
 		 **/
 		public function view_wrapper_close() {
 			echo '</div> <!-- #tribe-events-content-wrapper -->';
@@ -304,7 +289,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 * Shutdown the view, restore the query, etc. This happens right after the view file is included
 		 *
 		 * @return void
-		 * @since 3.0
 		 **/
 		public function shutdown_view() {
 			$this->unhook();
@@ -314,7 +298,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 * Unhook all the hooks set up on this view
 		 *
 		 * @return void
-		 * @author 
 		 **/
 		protected function unhook() {
 
@@ -364,7 +347,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 *
 		 * @param WP_Post $post
 		 * @return void
-		 * @since 3.0
 		 **/
 		public function manage_sensitive_info( $post ) {
 			if ( post_password_required( $post ) ) {
@@ -391,7 +373,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 *
 		 * @param string $template
 		 * @return string
-		 * @since 3.0
 		 **/
 		public function remove_comments_template( $template ) {
 			return TribeEvents::instance()->pluginPath . 'admin-views/no-comments.php';
@@ -403,7 +384,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 * @param $length
 		 *
 		 * @return int
-		 * @since 3.0
 		 */
 		public function excerpt_length( $length ) {
 			return $this->excerpt_length;
@@ -415,7 +395,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 * @param int $more
 		 *
 		 * @return int
-		 * @since 3.0
 		 */
 		public function excerpt_more( $more ) {
 			return $this->excerpt_more;
@@ -427,7 +406,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 * @param int $more
 		 *
 		 * @return int
-		 * @since 3.0
 		 */
 		public function comments_off( $option_value, $option_name ) {
 			if ( $option_name != 'showComments')
@@ -647,8 +625,6 @@ if( !class_exists('Tribe_Template_Factory') ) {
 		 * @param string $url The path or URL to the un-minified file.
 		 * @param bool $default_to_original Whether to just return original path if min version not found.
 		 * @return string|false The path/url to minified version or false, if file not found.
-		 * @author Paul Hughes
-		 * @since 3.0
 		 */
 		public static function getMinFile( $url, $default_to_original = false ) {
 			if ( !defined( 'SCRIPT_DEBUG' ) || SCRIPT_DEBUG === false ) {
