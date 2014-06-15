@@ -25,28 +25,16 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		const VENUE_POST_TYPE = 'tribe_venue';
 		const ORGANIZER_POST_TYPE = 'tribe_organizer';
 
-		// @TODO remove - unused
-		const PLUGIN_DOMAIN = 'tribe-events-calendar';
 		const VERSION = '3.6.1';
 		const FEED_URL = 'http://tri.be/category/products/feed/';
 		const INFO_API_URL = 'http://wpapi.org/api/plugin/the-events-calendar.php';
 		const WP_PLUGIN_URL = 'http://wordpress.org/extend/plugins/the-events-calendar/';
-
-		// @TODO remove - unused
-		const PREFIX = 'events';
 
 		/**
 		 * Notices to be displayed in the admin
 		 * @var array
 		 */
 		protected $notices = array();
-
-		/**
-		 * Maybe display data wrapper
-		 * @var array
-		 * @TODO remove - unused
-		 */
-		private $show_data_wrapper = array( 'before' => true, 'after' => true );
 
 		/**
 		 * Args for the event post type
@@ -95,14 +83,9 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			'exclude_from_search' => true
 		);
 
-		// @TODO remove - unused
-		protected $taxonomyLabels;
-
 		public static $tribeUrl = 'http://tri.be/';
 		public static $addOnPath = 'products/';
 
-		// @TODO remove - unused
-		public static $supportPath = 'support/';
 		public static $dotOrgSupportUrl = 'http://wordpress.org/tags/the-events-calendar';
 
 		protected static $instance;
@@ -119,8 +102,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		// @TODO trace this
 		protected $postExceptionThrown = false;
 
-		// @TODO remove - unused
-		protected $optionsExceptionThrown = false;
 		protected static $options;
 		protected static $networkOptions;
 
@@ -137,12 +118,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		// @TODO trace this
 		public $date;
 		protected $tabIndexStart = 2000;
-
-		// @TODO remove - unused
-		public $form_errors = array();
-
-		// @TODO remove - unused
-		public $form_message = array();
 
 		public $metaTags = array(
 			'_EventAllDay',
@@ -182,12 +157,10 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			'_OrganizerPhone'
 		);
 
-		// @TODO trace/remove - seems unused
-		public $states = array();
 		// @TODO refactor/remove
+		// @see tribe_is_new_event_day()
 		public $currentPostTimestamp;
 
-		// @TODO are these needed with date_i18n?
 		public $daysOfWeekShort;
 		public $daysOfWeek;
 		public $daysOfWeekMin;
@@ -473,7 +446,7 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			add_action( 'tribe_settings_content_tab_help', array( $this, 'doHelpTab' ) );
 			add_action( 'tribe_settings_validate_tab_network', array( $this, 'saveAllTabsHidden' ) );
 
-			// @TODO do we still need this for pre-3.x upgrades?
+			// @TODO remove in 4.0
 			add_action( 'load-tribe_events_page_tribe-events-calendar', array( 'Tribe_Amalgamator', 'listen_for_migration_button' ), 10, 0 );
 			add_action( 'tribe_settings_after_save', array($this, 'flushRewriteRules'));
 			add_action( 'load-edit-tags.php', array( $this, 'prepare_to_fix_tagcloud_links' ), 10, 0 );
@@ -576,15 +549,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			$single_label = apply_filters( 'tribe_organizer_label_singular', 'Organizer' );
 
 			return $single_label;
-		}
-
-		/**
-		 * @param string $html
-		 * @return string
-		 * @TODO remove - unused
-		 */
-		public function promo_banner_prevent_bot( $html ){
-			return $html;
 		}
 
 		/**
@@ -1150,32 +1114,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			}
 			return apply_filters( 'tribe_events_add_title', $new_title, $title, $sep );
 
-		}
-
-		/**
-		 * Empty the event content
-		 *
-		 * @param string $content
-		 * @return string
-		 * @todo remove - unused
-		 */
-		public function emptyEventContent( $content ) {
-			global $post;
-			if ( '' == $content && isset($post->post_type) && $post->post_type == self::POSTTYPE ) {
-				$content = __('No description has been entered for this event.', 'tribe-events-calendar');
-			}
-			return $content;
-		}
-
-		/**
-		 * Spoof GET vars to match the request for jumping months or years.
-		 * @todo remove - unused
-		 */
-		public function accessibleMonthForm() {
-			if ( isset($_GET['EventJumpToMonth']) && isset($_GET['EventJumpToYear'] )) {
-				$_GET['eventDisplay'] = 'month';
-				$_GET['eventDate'] = intval($_GET['EventJumpToYear']) . '-' . intval($_GET['EventJumpToMonth']);
-			}
 		}
 
 		/**
@@ -2105,21 +2043,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		}
 
 		/**
-		 * Saves the network option.
-		 *
-		 * @param string $name The name of the tribe network option.
-		 * @param mixed $value The value of the option you're setting.
-		 * @return void
-		 * @TODO remove, unused
-		 */
-		public function setNetworkOption($name, $value) {
-			$newOption = array();
-			$newOption[$name] = $value;
-			$options = self::getNetworkOptions();
-			$this->setNetworkOptions( wp_parse_args( $newOption, $options ) );
-		}
-
-		/**
 		 * Add the network admin options page
 		 *
 		 * @return void
@@ -2331,20 +2254,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			// Update the saved option
 			$this->setOption('viewOption', $view);
 			return $view;
-		}
-
-		/**
-		 * Helper method to return an array of 1-12 for months
-		 *
-		 * @return array
-		 * @todo remove - unused
-		 */
-		public function months( ) {
-			$months = array();
-			foreach( range( 1, 12 ) as $month ) {
-				$months[ $month ] = $month;
-			}
-			return $months;
 		}
 
 		/**
@@ -2707,28 +2616,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 			$params = apply_filters( 'tribe_google_calendar_parameters', $params );
 			$url = add_query_arg( $params, $base_url );
 			return esc_url( $url );
-		}
-
-		/**
-		 * Returns a link to google maps for the given event
-		 *
-		 * @return string a fully qualified link to http://maps.google.com/ for this event
-		 * @todo remove - unused
-		 */
-		public function get_google_maps_args() {
-
-			$locationMetaSuffixes = array( 'address', 'city', 'region', 'zip', 'country' );
-			$toUrlEncode = "";
-			$languageCode = substr( get_bloginfo( 'language' ), 0, 2 );
-			foreach( $locationMetaSuffixes as $val ) {
-				$metaVal = call_user_func('tribe_get_'.$val);
-				if ( $metaVal )
-					$toUrlEncode .= $metaVal . " ";
-			}
-			if ( $toUrlEncode )
-				return 'f=q&amp;source=embed&amp;hl=' . $languageCode . '&amp;geocode=&amp;q='. urlencode( trim( $toUrlEncode ) );
-			return "";
-
 		}
 
 		/**
@@ -3634,32 +3521,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		}
 
 		/**
-		 * Given a date (YYYY-MM-DD), returns the first day of the next week
-		 *
-		 * @deprecated
-		 * @param date
-		 * @return date
-		 * @todo remove
-		 */
-		public function nextWeek( $date ) {
-			_deprecated_function( __FUNCTION__, '3.0' );
-			$dateParts = explode( '-', $date );
-			if ( $dateParts[1] == 12 ) {
-				$dateParts[0]++;
-				$dateParts[1] = "01";
-				$dateParts[2] = "01";
-			} else {
-				$dateParts[1]++;
-				$dateParts[2] = "01";
-			}
-			if ( $dateParts[1] < 10 && strlen( $dateParts[1] ) == 1 ) {
-				$dateParts[1] = "0" . $dateParts[1];
-			}
-			$return =	$dateParts[0] . '-' . $dateParts[1];
-			return $return;
-		}
-
-		/**
 		 * Given a date (YYYY-MM-DD), return the first day of the previous week
 		 *
 		 * @deprecated
@@ -3773,20 +3634,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		}
 
 		/**
-		 * Get the date string.
-		 *
-		 * @param string $date The date.
-		 * @return string The pretty date.
-		 * @todo remove - unused
-		 */
-		public function getDateString( $date ) {
-			$monthNames = $this->monthNames();
-			$dateParts = explode( '-', $date );
-			$timestamp = mktime( 0, 0, 0, $dateParts[1], 1, $dateParts[0] );
-			return $monthNames[date( "F", $timestamp )] . " " . $dateParts[0];
-		}
-
-		/**
 		 * Get the date string (shortened).
 		 *
 		 * @param string $date The date.
@@ -3807,24 +3654,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		public function tabIndex() {
 			$this->tabIndexStart++;
 			return $this->tabIndexStart - 1;
-		}
-
-		/**
-		 * Get events. This is like the WP function get_posts().
-		 *
-		 * @param array $args Any args for the query.
-		 * @return array The posts/events returned.
-		 * @todo remove - unused
-		 */
-		public function getEvents( $args = array() ) {
-			$defaults = array(
-				'post_type' => TribeEvents::POSTTYPE, // tribe_events by default
-				'orderby' => 'event_date',
-				'order' => 'ASC'
-			);
-
-			$args = wp_parse_args( $args, $defaults);
-			return TribeEventsQuery::getEvents($args);
 		}
 
 		/**
@@ -4622,9 +4451,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 
 			$paged = $tribe_paged;
 
-			// @todo remove - unused
-			add_filter( 'tribe_events_list_pagination', array( __CLASS__, 'clear_module_pagination' ), 10 );
-
 			if ( $query->query_vars['eventDisplay'] == 'list' ) {
 				$this->displaying = 'upcoming';
 			} elseif ( $query->query_vars['eventDisplay'] == 'past' ) {
@@ -4674,20 +4500,6 @@ if ( !class_exists( 'TribeEvents' ) ) {
 				$source_array += $insert_array;
 			}
 			return $source_array;
-		}
-
-		/**
-		 * Clear pagination.
-		 *
-		 * @param string $html The current html.
-		 * @return string the modified html.
-		 * @todo remove - unused
-		 */
-		public static function clear_module_pagination( $html ) {
-			$html = '<li class="tribe-events-nav-previous"><a href="#" id="tribe-events-paged-prev" class="tribe-events-paged">' . __( '&laquo; Previous Events', 'tribe-events-calendar' ) . '</a></li>';
-			$html .= '<li class="tribe-events-nav-next"><a href="#" id="tribe-events-paged-next" class="tribe-events-paged">' . __( 'Next Events &raquo;', 'tribe-events-calendar' ) . '</a></li>';
-			return $html;
-
 		}
 
 		/**
