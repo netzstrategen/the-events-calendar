@@ -1816,6 +1816,7 @@ if ( !class_exists( 'TribeEvents' ) ) {
 
 		/**
 		 * We used to store midnight as 12:00. It should be 00:00.
+		 * We used to allow :30 increments. We now only allow whole hours.
 		 *
 		 * @param string $cutoff
 		 * @param string $default
@@ -1826,10 +1827,16 @@ if ( !class_exists( 'TribeEvents' ) ) {
 		public function filter_multiday_cutoff( $cutoff, $default, $option ) {
 			if ( $option == 'multiDayCutoff' ) {
 				$value = explode(':', $cutoff);
+				// change 12 to midnight
 				if ( $value[0] == '12' ) {
 					$value[0] = '00';
-					$cutoff = implode(':', $value);
 				}
+				// change :30 to :00 of the next hour
+				if ( $value[1] == '30' ) {
+					$value[0] = str_pad( $value[0] + 1, 2, '0', STR_PAD_LEFT );
+					$value[1] = '00';
+				}
+				$cutoff = implode(':', $value);
 			}
 			return $cutoff;
 		}
