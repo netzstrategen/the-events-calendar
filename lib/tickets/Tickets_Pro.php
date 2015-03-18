@@ -45,6 +45,12 @@ class Tribe__Events__Tickets__Tickets_Pro {
 
 
 	/**
+	 * @var Tribe__Events__Tickets__Meta
+	 */
+	protected $meta;
+
+
+	/**
 	 *    Class constructor.
 	 */
 	public function __construct() {
@@ -56,6 +62,8 @@ class Tribe__Events__Tickets__Tickets_Pro {
 
 		$this->path = trailingslashit( dirname( dirname( dirname( __FILE__ ) ) ) );
 		$this->google_event_data = new Tribe__Events__Tickets__Google_Event_Data;
+		$this->meta = new Tribe__Events__Tickets__Meta();
+
 	}
 
 	/**
@@ -365,6 +373,8 @@ class Tribe__Events__Tickets__Tickets_Pro {
 
 		$tickets = Tribe__Events__Tickets__Tickets::get_event_tickets( $post_id );
 		include $this->path . 'admin-views/tickets/meta-box.php';
+
+		do_action( 'tribe_events_tickets_after_metabox' );
 	}
 
 	/**
