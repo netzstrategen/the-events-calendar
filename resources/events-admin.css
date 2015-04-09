@@ -218,6 +218,9 @@ div.tribe-venue-error.error, div.tribe-organizer-error.error { margin-left:5px; 
 	right: 0;
 	font-size: inherit;
 }
+.tribe-tickets-attendee-info-form {
+	display: none;
+}
 .tribe-tickets-attendee-info-active-field h3 span {
 	font-size: 80%;
 	font-weight: bold;

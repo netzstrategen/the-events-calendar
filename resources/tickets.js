@@ -112,6 +112,23 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			e.preventDefault();
 		} );
 
+		/* Show the attendee info fields on selection change */
+		$( 'input[name=show_attendee_info]' ).change( function() {
+
+			var attendee_form = $(this).parents('tr').next('.tribe-tickets-attendee-info-form');
+
+			if(this.checked) {
+				attendee_form.show();
+			}
+			else {
+				attendee_form.hide();
+			}
+		} );
+		$( 'input[name=show_attendee_info]:checked' ).each( function() {
+			$( '.tribe-tickets-attendee-info-form' ).hide();
+			$(this).closest('tr').next('tribe-tickets-attendee-info-form').show();
+		} );
+
 		/* "Cancel" button action */
 		$( '#ticket_form_cancel' ).click( function() {
 
@@ -344,6 +361,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			$( '#ticket_form input:not(:button):not(:radio):not(:checkbox)' ).val( '' );
 			$( '#ticket_form input:checkbox' ).attr( 'checked', false );
+
+			$( '#ticket_form input[name="show_attendee_info"]' ).prop('checked', false).change();
 
 			$( '.ticket_start_time' ).hide();
 			$( '.ticket_end_time' ).hide();
