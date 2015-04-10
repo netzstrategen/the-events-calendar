@@ -129,6 +129,33 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$(this).closest('tr').next('tribe-tickets-attendee-info-form').show();
 		} );
 
+		// hide unnecessary fields
+		var attendeeFields = $( ".tribe-attendee-fields-box" ),
+			savedAttendee = $( "#saved_ticket-attendee-info" );
+
+		if ( savedAttendee.length > 0 && savedAttendee.val() != '0' ) {
+			attendeeFields.hide();
+			$( '[name="ticket-attendee-info[Name]"]' ).val( '' );
+		}
+
+		savedAttendee.change( function() {
+			var selected_attendee_id = $(this).val(),
+				current_edit_link = $('.edit-attendee-info-fields-link a').attr( 'data-admin-url' );
+
+			if ( selected_attendee_id == '0' ) {
+				attendeeFields.fadeIn();
+				$('.edit-attendee-info-fields-link').hide();
+			}
+			else {
+				attendeeFields.fadeOut();
+				$('.edit-attendee-info-fields-link').show();
+
+				// Change edit link
+
+				$('.edit-attendee-info--fields-link a').attr( 'href', current_edit_link + selected_attendee_id );
+			}
+		} );
+
 		/* "Cancel" button action */
 		$( '#ticket_form_cancel' ).click( function() {
 

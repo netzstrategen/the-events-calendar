@@ -1,10 +1,13 @@
-<tr>
-	<td colspan="2">
+<tr class="tribe-tickets-show-attendee-info">
+	<td style="width: 20%;">
+		<?php _e( 'Attendee Information:', 'tribe-events-calendar' ); ?>
+	</td>
+	<td>
 		<?php /* save as checked if the ticket has attendee info */ ?>
-		<label><input type="checkbox" name="show_attendee_info" id="show_attendee_info" class="ticket_field"> <?php _e( 'Ask for attendee information during  event registration?', 'tribe-events-calendar' ); ?></label>
+		<label><input type="checkbox" name="show_attendee_info" id="show_attendee_info" class="ticket_field"> <?php _e( 'Request information for each attendee during registration', 'tribe-events-calendar' ); ?></label>
 	</td>
 </tr>
-<tr class="eventtable ticket_list tribe-tickets-attendee-info-form">
+<tr class="eventtable tribe-tickets-attendee-info-form">
 	<td colspan="2">
 		<table class="eventtable">
 			<tr>
@@ -16,18 +19,20 @@
 				<td style="width:20%"><?php _e( 'Use Saved Attendee Info Fields:', 'tribe-events-calendar' ); ?></td>
 				<td>
 					<select style="width: 20%" class="chosen ticket-attendee-info-dropdown" name="ticket-attendee-info[MetaID]"
-					        id="saved_ticket-user-meta" title="ticket-attendee-info[MetaID]">
-						<option value="0" selected="selected">Use New Attendee Info Fields</option>
+					        id="saved_ticket-attendee-info" title="ticket-attendee-info[MetaID]">
+							<option value="0" selected="selected">Use New Attendee Info Fields</option>
+							<option data-attendee-group="Racer Info" value="1">Racer Info</option>
 					</select>
+					<div class="edit-attendee-info-fields-link" style="display: none;"><a data-admin-url="" href="" target="_blank"><?php _e( 'Edit Attendee Info Fields', 'tribe-events-calendar' ); ?></a></div>
 				</td>
 			</tr>
-			<tr>
+			<tr class="tribe-attendee-fields-box">
 				<td style="width:20%"><?php _e( 'Attnedee Info Fields Group Name:', 'tribe-events-calendar' ); ?></td>
 				<td>
-					<input type="text" name="ticket-attendee-info[MetaFieldsName]" size="25" value="">
+					<input type="text" name="ticket-attendee-info[Name]" size="25" value="">
 				</td>
 			</tr>
-			<tr>
+			<tr class="tribe-attendee-fields-box">
 				<td style="width:20%">
 					<h5><?php _e( 'Add New Field:', 'tribe-events-calendar' ); ?></h5>
 					<ul class="tribe-tickets-attendee-info-options">
