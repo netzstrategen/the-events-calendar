@@ -26,7 +26,8 @@
 	visibility : visible;
 }
 
-.ticket_list h4 {
+.ticket_list h4,
+.tribe-tickets-attendee-info-form h4 {
 	text-transform : uppercase;
 	border-bottom  : 1px solid #e5e5e5;
 	padding-bottom : 6px;
@@ -61,4 +62,86 @@ p.ticket_name {
 
 .ticket_time{
 	display:none;
+}
+/* = Attemdee Info
+=============================================*/
+.tribe-tickets-show-attendee-info td  {
+	padding:20px 0;
+}
+.tribe-tickets-show-attendee-info label {
+	font-weight: bold;
+}
+.tribe-attendee-fields-box {
+	vertical-align:top;
+}
+#saved_ticket_attendee_info_chosen {
+	width: 220px !important;
+}
+#tribe-tickets-attendee-sortables {
+	min-height: 250px;
+	max-width: 450px;
+}
+.tribe-tickets-attendee-info-active-field  {
+	background: #fafafa;
+	border-color: #dfdfdf;
+	width: 100%;
+	margin-bottom: 10px;
+}
+.tribe-tickets-attendee-info-options {
+	padding-right: 20px;
+}
+.tribe-tickets-attendee-info-options a {
+	text-decoration: none;
+}
+.tribe-tickets-attendee-info-options li {
+	position: relative;
+}
+.tribe-tickets-attendee-info-options li a {
+	display: block;
+	padding: 5px 0;
+	border-bottom: 1px solid #dfdfdf;
+}
+.tribe-tickets-attendee-info-options li span {
+	position: absolute;
+	right: 0;
+	font-size: inherit;
+}
+.tribe-tickets-attendee-info-form {
+	display: none;
+}
+.tribe-tickets-attendee-info-form td {
+	padding-bottom: 10px;
+}
+.tribe-tickets-attendee-info-active-field h3 span {
+	font-size: 80%;
+	font-weight: bold;
+	font-family: sans-serif;
+	text-transform: uppercase;
+	opacity: .75;
+}
+.tribe-tickets-input {
+	margin: 10px 0;
+}
+.tribe-tickets-required {
+	font-size: 11px;
+}
+.tribe-tickets-input label {
+	display: block;
+}
+
+.tribe-tickets-input-checkbox label,
+.tribe-tickets-input-radio label {
+
+}
+
+.tribe-tickets-input input[type="text"],
+.tribe-tickets-input textarea {
+	width: 100%;
+}
+.tribe-tickets-delete-field {
+	margin-top: 5px;
+	text-align: right;
+}
+.tribe-tickets-delete-field a {
+	color: red;
 }
