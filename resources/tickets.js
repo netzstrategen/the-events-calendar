@@ -91,12 +91,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$( 'input[name=ticket_provider]:radio' ).change( function() {
 			$( 'tr.ticket_advanced' ).hide();
 			$( 'tr.ticket_advanced_' + this.value ).show();
+			$( 'tr.ticket_advanced_meta' ).show();
 		} );
 
 		/* Show the advanced metabox for the selected provider and hide the others at ready */
 		$( 'input[name=ticket_provider]:checked' ).each( function() {
 			$( 'tr.ticket_advanced' ).hide();
 			$( 'tr.ticket_advanced_' + this.value ).show();
+			$( 'tr.ticket_advanced_meta' ).show();
 		} );
 
 		/* "Add a ticket" link action */
@@ -113,9 +115,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		} );
 
 		/* Show the attendee info fields on selection change */
-		$( 'input[name=show_attendee_info]' ).change( function() {
+		$( '#event_tickets' ).on('change','input[name=show_attendee_info]', function() {
 
-			var attendee_form = $(this).parents('tr').next('.tribe-tickets-attendee-info-form');
+			var attendee_form = $(this).parents('tr').next('tr.tribe-tickets-attendee-info-form');
 
 			if(this.checked) {
 				attendee_form.show();
@@ -341,6 +343,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						}
 
 						$( 'tr.ticket_advanced_' + response.data.provider_class ).remove();
+						$( 'tr.ticket_advanced_meta' ).remove();
 						$( 'tr.ticket.bottom' ).before( response.data.advanced_fields );
 
 						$( 'input:radio[name=ticket_provider]' ).filter( '[value=' + response.data.provider_class + ']' ).click();

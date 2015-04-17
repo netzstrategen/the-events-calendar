@@ -1,4 +1,4 @@
-<tr class="tribe-tickets-show-attendee-info">
+<tr class="tribe-tickets-show-attendee-info ticket_advanced ticket_advanced_meta">
 	<td style="width: 20%;">
 		<?php _e( 'Attendee Information:', 'tribe-events-calendar' ); ?>
 	</td>
@@ -7,7 +7,7 @@
 		<label><input type="checkbox" name="show_attendee_info" id="show_attendee_info" class="ticket_field"> <?php _e( 'Request information for each attendee during registration', 'tribe-events-calendar' ); ?></label>
 	</td>
 </tr>
-<tr class="eventtable tribe-tickets-attendee-info-form">
+<tr class="eventtable tribe-tickets-attendee-info-form ticket_advanced ticket_advanced_meta">
 	<td colspan="2">
 		<table class="eventtable">
 			<tr>

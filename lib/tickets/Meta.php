@@ -1,10 +1,9 @@
 <?php
 
-
 class Tribe__Events__Tickets__Meta {
 
 	public function __construct() {
-		add_action( 'tribe_events_tickets_metabox_advanced', array( $this, 'metabox' ) );
+		add_action( 'tribe_events_tickets_metabox_advanced', array( $this, 'metabox' ), 99 );
 	}
 
 	public function metabox() {

@@ -435,7 +435,7 @@ if ( ! class_exists( 'Tribe__Events__Tickets__Tickets' ) ) {
 			$return = get_object_vars( $this->get_ticket( $post_id, $ticket_id ) );
 
 			ob_start();
-			$this->do_metabox_advanced_options( $post_id, $ticket_id );
+			do_action( 'tribe_events_tickets_metabox_advanced', $post_id, $ticket_id );
 			$extra = ob_get_contents();
 			ob_end_clean();
 
