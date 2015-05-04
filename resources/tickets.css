@@ -63,7 +63,7 @@ p.ticket_name {
 .ticket_time{
 	display:none;
 }
-/* = Attemdee Info
+/* = Attendee Info
 =============================================*/
 .tribe-tickets-show-attendee-info td  {
 	padding:20px 0;
@@ -144,4 +144,10 @@ p.ticket_name {
 }
 .tribe-tickets-delete-field a {
 	color: red;
+}
+
+/* = Attendee Info Form
+=============================================*/
+#tribe-events-pg-template .cmb-form {
+	padding: 3%;
 }

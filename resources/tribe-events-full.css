@@ -1818,3 +1818,199 @@ input[name*="tribe-bar-"]:-moz-placeholder {
 		background-image: url(images/events-bar/icon-map@2x.png);
 	}
 }
+
+/* TICKETS FRONT END - TO BE MOVED TO ITS OWN FILE @todo
+   ========================================================================== */
+.tribe-tickets-attendee-heading .tribe-events-page-title {
+	text-align: left;
+}
+.tribe-tickets-attendee-fieldgroup {
+	padding: 30px;
+	background: #ffffff;
+	border: 1px solid #eaeaea;
+	box-shadow: 0 10px 10px #eaeaea;
+	-webkit-box-shadow: 0 10px 10px #eaeaea;
+	-moz-box-shadow: 0 10px 10px #eaeaea;
+	margin-bottom: 20px;
+}
+
+.tribe-tickets-attendee-fieldgroup h4 {
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 20px;
+	margin-top: 0;
+}
+
+.tribe-tickets-attendee-fieldgroup h4 a {
+	text-decoration: underline;
+}
+.tribe-tickets-attendee-fieldgroup h4 span {
+	font-style: italic;
+}
+.tribe-tickets-attendee-form label {
+	font-size: 16px;
+}
+.tribe-tickets-attendee-form label:hover {
+	cursor: pointer;
+}
+
+.tribe-tickets-attendee-form button,
+.tribe-tickets-attendee-form input,
+.tribe-tickets-attendee-form select,
+.tribe-tickets-attendee-form textarea {
+	background-color: #f7f7f7;
+	border-radius: 0;
+	font-size: 16px;
+	line-height: 1.5;
+	margin: 0;
+	max-width: 100%;
+	vertical-align: baseline;
+}
+
+.tribe-tickets-attendee-form button,
+.tribe-tickets-attendee-form input {
+	line-height: normal;
+}
+
+.tribe-tickets-attendee-form input,
+.tribe-tickets-attendee-form textarea {
+	background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)); /* Removing the inner shadow on iOS inputs */
+	border: 1px solid #eaeaea;
+	color: #707070;
+	color: rgba(51, 51, 51, 0.7);
+}
+
+.tribe-tickets-attendee-form input:focus,
+.tribe-tickets-attendee-form textarea:focus {
+	background-color: #fff;
+	border: 1px solid #c1c1c1;
+	color: #333;
+}
+
+.tribe-tickets-attendee-form input:focus,
+.tribe-tickets-attendee-form select:focus {
+	outline: 2px solid #c1c1c1;
+}
+
+.tribe-tickets-attendee-form button[disabled],
+.tribe-tickets-attendee-form input[disabled],
+.tribe-tickets-attendee-form select[disabled],
+.tribe-tickets-attendee-form textarea[disabled] {
+	cursor: default;
+	opacity: .5;
+}
+
+
+.tribe-tickets-attendee-form button:hover,
+.tribe-tickets-attendee-form input[type="button"]:hover,
+.tribe-tickets-attendee-form input[type="reset"]:hover,
+.tribe-tickets-attendee-form button:focus,
+.tribe-tickets-attendee-form input[type="button"]:focus,
+.tribe-tickets-attendee-form input[type="reset"]:focus {
+	background-color: #707070;
+	outline: 0;
+}
+
+.tribe-tickets-attendee-forminput[type="search"] {
+	-webkit-appearance: textfield;
+}
+
+
+.tribe-tickets-attendee-form button::-moz-focus-inner,
+.tribe-tickets-attendee-form input::-moz-focus-inner {
+	border: 0;
+	padding: 0;
+}
+
+.tribe-tickets-attendee-form input[type="text"],
+.tribe-tickets-attendee-form textarea {
+	width: 100%;
+}
+
+.tribe-tickets-attendee-form textarea {
+	overflow: auto;
+	vertical-align: top;
+}
+
+.tribe-tickets-attendee-form input[type="text"]:focus,
+.tribe-tickets-attendee-form textarea:focus {
+	outline: 0;
+}
+
+
+.tribe-tickets-attendee-form input[type="checkbox"],
+.tribe-tickets-attendee-form input[type="radio"] {
+	padding: 0;
+}
+
+.tribe-tickets-attendee-form ul {
+	margin: 0;
+	padding: 0;
+}
+.tribe-tickets-attendee-form li {
+	list-style: none;
+}
+
+.tribe-tickets-attendee-form .cmb-row {
+	margin-bottom: 15px;
+}
+
+.tribe-tickets-button,
+.tribe-tickets-attendee-actions input[type="submit"]  {
+	padding: 15px 30px;
+	font-size: 16px;
+	font-family: sans-serif;
+	font-weight: bold;
+	text-transform: none;
+	line-height: 1.2;
+	text-align: center;
+	border-radius: 3px;
+}
+input.tribe-tickets-button:hover {
+	cursor: pointer;
+}
+
+.tribe-tickets-button-primary,
+.tribe-tickets-attendee-actions input[type=submit] {
+	background-color: #27ae60;
+	border: 1px solid #27ae60;
+	color: #ffffff;
+	background-image: none;
+}
+
+.tribe-tickets-button-primary:hover,
+.tribe-tickets-attendee-actions input[type=submit]:hover {
+	background-color: #2ecc71;
+	border-color: #2ecc71;
+	background-image: none;
+}
+
+.tribe-tickets-button-secondary,
+.tribe-tickets-button-secondary:visited {
+	color: #000000;
+	border: 1px solid #000000;
+}
+
+.tribe-tickets-button-secondary:hover {
+	background: #000000;
+	color: #ffffff;
+}
+
+.tribe-tickets-attendee-actions {
+	clear: both;
+	margin-top: 30px;
+}
+.tribe-tickets-attendee-actions .tribe-tickets-button {
+	display: inline-block;
+	float: left;
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+.tribe-tickets-attendee-actions .tribe-tickets-button-primary {
+	width: 75%;
+}
+
+.tribe-tickets-attendee-actions .tribe-tickets-button-secondary {
+	width: 23%;
+	margin-right: 2%;
+}
