@@ -111,6 +111,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( 'html, body' ).animate( {
 				scrollTop: $( "#ticket_form_table" ).offset().top - 50
 			}, 500 );
+
 			e.preventDefault();
 		} );
 
@@ -126,10 +127,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				attendee_form.hide();
 			}
 		} );
-		$( 'input[name=show_attendee_info]:checked' ).each( function() {
-			$( '.tribe-tickets-attendee-info-form' ).hide();
-			$(this).closest('tr').next('tribe-tickets-attendee-info-form').show();
-		} );
+
+
 
 		// hide unnecessary fields
 		var attendeeFields = $( ".tribe-attendee-fields-box" ),
@@ -351,6 +350,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$( 'a#ticket_form_toggle' ).hide();
 						$( '#ticket_form' ).show();
 
+						$( '#tribetickets' ).trigger( 'tribe-tickets-edit' );
+
+
+
 					},
 					'json'
 				).complete( function() {
@@ -392,7 +395,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( '#ticket_form input:not(:button):not(:radio):not(:checkbox)' ).val( '' );
 			$( '#ticket_form input:checkbox' ).attr( 'checked', false );
 
-			$( '#ticket_form input[name="show_attendee_info"]' ).prop('checked', false).change();
+			$( '#ticket_form input[name="show_attendee_info"]' ).prop( 'checked', false ).change();
 
 			$( '.ticket_start_time' ).hide();
 			$( '.ticket_end_time' ).hide();
@@ -401,6 +404,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( '#ticket_form textarea' ).val( '' );
 
 			$( '#ticket_form' ).hide();
+
+			$( '#tribe-tickets-attendee-sortables' ).empty();
 		}
 
 		function tickets_start_spin() {

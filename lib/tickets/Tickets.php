@@ -331,6 +331,8 @@ if ( ! class_exists( 'Tribe__Events__Tickets__Tickets' ) ) {
 				Tribe__Events__API::update_event_cost( $post_id );
 			}
 
+			do_action( 'tribe_events_tickets_save_ticket', $post_id, $ticket, $data );
+
 			$this->ajax_ok( $return );
 		}
 
