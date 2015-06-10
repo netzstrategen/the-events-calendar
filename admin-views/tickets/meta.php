@@ -46,7 +46,7 @@
 							<p>No active fields. Add new fields or</p>
 							<select class="chosen ticket-attendee-info-dropdown" name="ticket-attendee-info[MetaID]"
 							        id="saved_ticket-attendee-info" title="ticket-attendee-info[MetaID]">
-									<option value="0">Use New Attendee Info Fields</option>
+									<option value="0">Start with a saved fieldset...</option>
 									<option data-attendee-group="Racer Info" value="1">Racer Info</option>
 							</select>
 						</div>

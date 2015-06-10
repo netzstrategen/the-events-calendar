@@ -111,7 +111,7 @@ class Tribe__Events__Tickets__Meta {
 
 				<div class="tribe-tickets-input tribe-tickets-input-text">
 					<label for="tickets_attendee_info_field">Label:</label>
-					<input type="text" class="ticket_field" name="tribe-tickets-input-1436727693-label" value="">
+					<input type="text" class="ticket_field" name="tribe-tickets-input-1436727693-label" value="First Name">
 				</div>
 
 				<div class="tribe-tickets-input tribe-tickets-input-checkbox tribe-tickets-required">
@@ -135,13 +135,16 @@ class Tribe__Events__Tickets__Meta {
 
 				<div class="tribe-tickets-input tribe-tickets-input-text">
 					<label for="tickets_attendee_info_field">Label:</label>
-					<input type="text" class="ticket_field" name="tribe-tickets-input-1899078293-label" value="">
+					<input type="text" class="ticket_field" name="tribe-tickets-input-1899078293-label" value="Shirt Size">
 				</div>
 
 				<div class="tribe-tickets-input tribe-tickets-input-textarea">
 					<label for="tickets_attendee_info_field">Options (one per line)</label>
-					<textarea name="tribe-tickets-input-1899078293-options" class="ticket_field" value=""
-					          rows="5"></textarea>
+					<textarea name="tribe-tickets-input-1417191045-options" class="ticket_field" value="" rows="5">
+Small
+Medium
+Large
+					</textarea>
 				</div>
 
 				<div class="tribe-tickets-input tribe-tickets-input-checkbox tribe-tickets-required">
