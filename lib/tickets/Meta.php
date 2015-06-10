@@ -8,6 +8,7 @@ class Tribe__Events__Tickets__Meta {
 	public function __construct() {
 		add_action( 'tribe_events_tickets_metabox_advanced',   array( $this, 'metabox'            ), 99, 2 );
 		add_action( 'wp_ajax_tribe-tickets-info-render-field', array( $this, 'ajax_render_fields' )        );
+		add_action( 'wp_ajax_tribe-tickets-load-saved-fields', array( $this, 'ajax_render_saved_fields' )  );
 		add_action( 'tribe_events_tickets_save_ticket',        array( $this, 'save_meta'          ), 10, 3 );
 	}
 
@@ -23,7 +24,7 @@ class Tribe__Events__Tickets__Meta {
 		}
 
 		$templates = get_option( self::TEMPLATES_META_KEY, array() );
-		
+
 		if ( ! empty( $templates ) ) {
 			$templates = array_keys( $templates );
 		}
@@ -82,6 +83,80 @@ class Tribe__Events__Tickets__Meta {
 		}
 
 		$response['data'] = $this->get_render_field( $_POST['type'] );
+		if ( ! empty( $response['data'] ) ) {
+			$response['success'] = true;
+		}
+
+		wp_send_json( $response );
+	}
+
+	public function ajax_render_saved_fields() {
+
+		// ToDo: Obviously refactor after demo. This is hardcoded data (derp)
+
+		$response = array(
+			'success' => false,
+			'data'    => ''
+		);
+
+		ob_start(); ?>
+
+		<div id="field-1436727693" class="tribe-tickets-attendee-info-active-field postbox closed">
+			<div class="handlediv" title="Click to toggle"><br></div>
+			<h3 class="hndle ui-sortable-handle"><span>Text:</span></h3>
+
+			<div class="inside">
+				<input type="hidden" class="ticket_field" name="tribe-tickets-input-1436727693-type" value="text">
+				<input type="hidden" class="ticket_field" name="tribe-tickets-input[]" value="1436727693">
+
+				<div class="tribe-tickets-input tribe-tickets-input-text">
+					<label for="tickets_attendee_info_field">Label:</label>
+					<input type="text" class="ticket_field" name="tribe-tickets-input-1436727693-label" value="">
+				</div>
+
+				<div class="tribe-tickets-input tribe-tickets-input-checkbox tribe-tickets-required">
+					<label class="prompt"><input type="checkbox" class="ticket_field"
+					                             name="tribe-tickets-input-1436727693-required" value="on">
+						Required?
+					</label>
+				</div>
+				<div class="tribe-tickets-delete-field">
+					<a href="#" class="delete-attendee-field">Delete this field</a>
+				</div>
+			</div>
+		</div>
+		<div id="field-1899078293" class="tribe-tickets-attendee-info-active-field postbox closed">
+			<div class="handlediv" title="Click to toggle"><br></div>
+			<h3 class="hndle ui-sortable-handle"><span>Select:</span></h3>
+
+			<div class="inside">
+				<input type="hidden" class="ticket_field" name="tribe-tickets-input-1899078293-type" value="select">
+				<input type="hidden" class="ticket_field" name="tribe-tickets-input[]" value="1899078293">
+
+				<div class="tribe-tickets-input tribe-tickets-input-text">
+					<label for="tickets_attendee_info_field">Label:</label>
+					<input type="text" class="ticket_field" name="tribe-tickets-input-1899078293-label" value="">
+				</div>
+
+				<div class="tribe-tickets-input tribe-tickets-input-textarea">
+					<label for="tickets_attendee_info_field">Options (one per line)</label>
+					<textarea name="tribe-tickets-input-1899078293-options" class="ticket_field" value=""
+					          rows="5"></textarea>
+				</div>
+
+				<div class="tribe-tickets-input tribe-tickets-input-checkbox tribe-tickets-required">
+					<label class="prompt"><input type="checkbox" class="ticket_field"
+					                             name="tribe-tickets-input-1899078293-required" value="on">
+						Required?
+					</label>
+				</div>
+				<div class="tribe-tickets-delete-field">
+					<a href="#" class="delete-attendee-field">Delete this field</a>
+				</div>
+			</div>
+		</div>
+
+		<?php $response['data'] = ob_get_clean();;
 		if ( ! empty( $response['data'] ) ) {
 			$response['success'] = true;
 		}
