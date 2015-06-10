@@ -115,47 +115,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			e.preventDefault();
 		} );
 
-		/* Show the attendee info fields on selection change */
-		$( '#event_tickets' ).on('change','input[name=show_attendee_info]', function() {
 
-			var attendee_form = $(this).parents('tr').next('tr.tribe-tickets-attendee-info-form');
-
-			if(this.checked) {
-				attendee_form.show();
-			}
-			else {
-				attendee_form.hide();
-			}
-		} );
-
-
-
-		// hide unnecessary fields
-		var attendeeFields = $( ".tribe-attendee-fields-box" ),
-			savedAttendee = $( "#saved_ticket-attendee-info" );
-
-		if ( savedAttendee.length > 0 && savedAttendee.val() != '0' ) {
-			attendeeFields.hide();
-			$( '[name="ticket-attendee-info[Name]"]' ).val( '' );
-		}
-
-		savedAttendee.change( function() {
-			var selected_attendee_id = $(this).val(),
-				current_edit_link = $('.edit-attendee-info-fields-link a').attr( 'data-admin-url' );
-
-			if ( selected_attendee_id == '0' ) {
-				attendeeFields.fadeIn();
-				$('.edit-attendee-info-fields-link').hide();
-			}
-			else {
-				attendeeFields.fadeOut();
-				$('.edit-attendee-info-fields-link').show();
-
-				// Change edit link
-
-				$('.edit-attendee-info--fields-link a').attr( 'href', current_edit_link + selected_attendee_id );
-			}
-		} );
 
 		/* "Cancel" button action */
 		$( '#ticket_form_cancel' ).click( function() {
@@ -349,6 +309,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						$( 'a#ticket_form_toggle' ).hide();
 						$( '#ticket_form' ).show();
+
+						// initialize selects in attendee form
+						$('#ticket_form .chosen' ).chosen();
 
 						$( '#tribetickets' ).trigger( 'tribe-tickets-edit' );
 
