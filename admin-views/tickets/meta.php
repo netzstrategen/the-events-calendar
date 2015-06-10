@@ -16,26 +16,7 @@
 					<h4 class="tribe_sectionheader">Attendee Information</h4>
 				</td>
 			</tr>
-<!--			<tr>-->
-<!--				<td style="width:20%">--><?php //_e( 'Use Saved Attendee Info Fields:', 'tribe-events-calendar' ); ?><!--</td>-->
-<!--				<td>-->
-<!--					<select style="width: 20%" class="chosen ticket-attendee-info-dropdown ticket_field" name="tribe-tickets-input-saved"-->
-<!--					        id="saved_ticket-attendee-info" title="Select one">-->
-<!--							<option value="0" selected="selected">Use New Attendee Info Fields</option>-->
-<!--						--><?php //foreach ( (array) $templates as $template ): ?>
-<!--							<option data-attendee-group="--><?php //echo esc_attr( $template ); ?><!--"-->
-<!--							        value="--><?php //echo esc_attr( $template ); ?><!--">--><?php //echo esc_html( $template ); ?><!--</option>-->
-<!--						--><?php //endforeach; ?>
-<!--					</select>-->
-<!--					<div class="edit-attendee-info-fields-link" style="display: none;"><a data-admin-url="" href="" target="_blank">--><?php //_e( 'Edit Attendee Info Fields', 'tribe-events-calendar' ); ?><!--</a></div>-->
-<!--				</td>-->
-<!--			</tr>-->
-<!--			<tr class="tribe-attendee-fields-box">-->
-<!--				<td style="width:20%">--><?php //_e( 'Attnedee Info Fields Group Name:', 'tribe-events-calendar' ); ?><!--</td>-->
-<!--				<td>-->
-<!--					<input type="text" class="ticket_field" name="tribe-tickets-input-save-name" size="25" value="">-->
-<!--				</td>-->
-<!--			</tr>-->
+
 			<tr class="tribe-attendee-fields-box">
 				<td style="width:20%">
 					<h5><?php _e( 'Add New Field:', 'tribe-events-calendar' ); ?></h5>
@@ -60,14 +41,33 @@
 				</td>
 				<td>
 					<h5><?php _e( 'Active Fields:', 'tribe-events-calendar' ); ?></h5>
+					<div class="tribe-tickets-attendee-saved-fields">
+						<div class="tribe-tickets-saved-fields-select">
+							<p>No active fields. Add new fields or</p>
+							<select class="chosen ticket-attendee-info-dropdown" name="ticket-attendee-info[MetaID]"
+							        id="saved_ticket-attendee-info" title="ticket-attendee-info[MetaID]">
+									<option value="0">Use New Attendee Info Fields</option>
+									<option data-attendee-group="Racer Info" value="1">Racer Info</option>
+							</select>
+						</div>
 
+					</div>
 					<div id="tribe-tickets-attendee-sortables" class="meta-box-sortables ui-sortable">
-					
 						<?php
 						foreach ( $active_meta as $meta ) {
 							echo $this->get_render_field( $meta['type'], $meta );
 						}
 						?>
+
+					</div>
+					<div class="tribe-tickets-input tribe-tickets-attendee-save-fieldset">
+						<label>
+							<input type="checkbox" name="save_attendee_fieldset" id="save_attendee_fieldset" class="ticket_field"> Save this fieldset for use on other tickets?
+						</label>
+					</div>
+					<div class="tribe-tickets-input tribe-tickets-attendee-saved-fieldset-name">
+							<label for="tribe-tickets-saved-fieldset-name">Name this fieldset:</label>
+							<input type="text" class="ticket_field" name="tribe-tickets-saved-fieldset-name" value="">
 					</div>
 				</td>
 			</tr>
