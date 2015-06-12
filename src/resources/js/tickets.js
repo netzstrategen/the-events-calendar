@@ -76,16 +76,16 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			}
 		};
 
-		$( "#ticket_start_date" ).datepicker( datepickerOpts ).keyup( function( e ) {
-			if ( e.keyCode === 8 || e.keyCode === 46 ) {
-				$.datepicker._clearDate( this );
-			}
-		} );
-		$( "#ticket_end_date" ).datepicker( datepickerOpts ).keyup( function( e ) {
-			if ( e.keyCode === 8 || e.keyCode === 46 ) {
-				$.datepicker._clearDate( this );
-			}
-		} );
+		//$( "#ticket_start_date" ).datepicker( datepickerOpts ).keyup( function( e ) {
+		//	if ( e.keyCode === 8 || e.keyCode === 46 ) {
+		//		$.datepicker._clearDate( this );
+		//	}
+		//} );
+		//$( "#ticket_end_date" ).datepicker( datepickerOpts ).keyup( function( e ) {
+		//	if ( e.keyCode === 8 || e.keyCode === 46 ) {
+		//		$.datepicker._clearDate( this );
+		//	}
+		//} );
 
 		/* Show the advanced metabox for the selected provider and hide the others on selection change */
 		$( 'input[name=ticket_provider]:radio' ).change( function() {
@@ -369,6 +369,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( '#ticket_form' ).hide();
 
 			$( '#tribe-tickets-attendee-sortables' ).empty();
+			$('.tribe-tickets-attendee-saved-fields' ).show();
 		}
 
 		function tickets_start_spin() {

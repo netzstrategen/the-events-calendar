@@ -6,14 +6,14 @@ class Tribe__Events__Tickets__Meta {
 	const TEMPLATES_META_KEY = '_tribe_tickets_meta_templates';
 
 	public function __construct() {
-		add_action( 'tribe_events_tickets_metabox_advanced',   array( $this, 'metabox'            ), 99, 2 );
-		add_action( 'wp_ajax_tribe-tickets-info-render-field', array( $this, 'ajax_render_fields' )        );
-		add_action( 'wp_ajax_tribe-tickets-load-saved-fields', array( $this, 'ajax_render_saved_fields' )  );
-		add_action( 'tribe_events_tickets_save_ticket',        array( $this, 'save_meta'          ), 10, 3 );
+		add_action( 'tribe_events_tickets_metabox_advanced',   array( $this, 'metabox'                  ), 99, 2 );
+		add_action( 'wp_ajax_tribe-tickets-info-render-field', array( $this, 'ajax_render_fields'       )        );
+		add_action( 'wp_ajax_tribe-tickets-load-saved-fields', array( $this, 'ajax_render_saved_fields' )        );
+		add_action( 'tribe_events_tickets_save_ticket',        array( $this, 'save_meta'                ), 10, 3 );
 	}
 
 	public function metabox( $post_id, $ticket_id ) {
-		$path = trailingslashit( Tribe__Events__Events::instance()->pluginPath );
+		$path = trailingslashit( Tribe__Events__Main::instance()->pluginPath );
 
 		if ( ! empty( $ticket_id ) ) {
 			$active_meta = get_post_meta( $ticket_id, self::META_KEY, true );
@@ -26,13 +26,13 @@ class Tribe__Events__Tickets__Meta {
 		$templates = get_option( self::TEMPLATES_META_KEY, array() );
 
 		if ( ! empty( $templates ) ) {
-			$templates = array_keys( $templates );
+			$templates = array_filter( array_keys( $templates ) );
 		}
 
-		include( $path . 'admin-views/tickets/meta.php' );
+		include( $path . 'src/admin-views/tickets/meta.php' );
 
-		wp_enqueue_style( 'events-tickets-meta', plugins_url( 'resources/tickets-meta.css', dirname( dirname( __FILE__ ) ) ), array(), apply_filters( 'tribe_events_css_version', Tribe__Events__Events::VERSION ) );
-		wp_enqueue_script( 'events-tickets-meta', plugins_url( 'resources/tickets-meta.js', dirname( dirname( __FILE__ ) ) ), array(), apply_filters( 'tribe_events_js_version', Tribe__Events__Events::VERSION ) );
+		wp_enqueue_style( 'events-tickets-meta', plugins_url( 'resources/css/tickets-meta.css', dirname( dirname( __FILE__ ) ) ), array(), apply_filters( 'tribe_events_css_version', Tribe__Events__Main::VERSION ) );
+		wp_enqueue_script( 'events-tickets-meta', plugins_url( 'resources/js/tickets-meta.js', dirname( dirname( __FILE__ ) ) ) , array(), apply_filters( 'tribe_events_js_version', Tribe__Events__Main::VERSION ) );
 
 	}
 
@@ -63,12 +63,35 @@ class Tribe__Events__Tickets__Meta {
 		update_post_meta( $ticket->ID, self::META_KEY, $meta );
 
 		// Save templates too
-		if ( isset( $data['tribe-tickets-input-save-name'] ) ) {
+		if ( isset( $data['tribe-tickets-save-fieldset'] ) && ! empty( $data['tribe-tickets-saved-fieldset-name'] ) ) {
 			$existing = get_option( self::TEMPLATES_META_KEY, array() );
-			$existing[ $data['tribe-tickets-input-save-name'] ] = $meta;
+			$key = $this->_get_fieldset_name( $data['tribe-tickets-saved-fieldset-name'], $meta );
+			$existing[ $key ] = $meta;
 			update_option( self::TEMPLATES_META_KEY, $existing );
 		}
 
+	}
+
+	private function _get_fieldset_name( $name, $content ) {
+		$existing = get_option( self::TEMPLATES_META_KEY, array() );
+
+		// If we don't have a fieldset with this name, use it.
+		if ( empty( $existing[ $name ] ) ) {
+			return $name;
+		}
+
+		// If we have the name but with the same content, it's the same fieldset
+		if ( md5( serialize( $content ) ) == md5( serialize( $existing[ $name ] ) ) ) {
+			return $name;
+		}
+
+		$count    = 1;
+		$new_name = $name;
+		while ( ! empty( $existing[ $new_name ] ) ) {
+			$new_name = $name . ' ' . $count;
+		}
+
+		return $new_name;
 	}
 
 	public function ajax_render_fields() {
@@ -92,74 +115,25 @@ class Tribe__Events__Tickets__Meta {
 
 	public function ajax_render_saved_fields() {
 
-		// ToDo: Obviously refactor after demo. This is hardcoded data (derp)
-
 		$response = array(
 			'success' => false,
 			'data'    => ''
 		);
 
-		ob_start(); ?>
+		if ( empty( $_POST['fieldset'] ) ) {
+			wp_send_json( $response );
+		}
 
-		<div id="field-1436727693" class="tribe-tickets-attendee-info-active-field postbox closed">
-			<div class="handlediv" title="Click to toggle"><br></div>
-			<h3 class="hndle ui-sortable-handle"><span>Text:</span></h3>
+		$existing = get_option( self::TEMPLATES_META_KEY, array() );
 
-			<div class="inside">
-				<input type="hidden" class="ticket_field" name="tribe-tickets-input-1436727693-type" value="text">
-				<input type="hidden" class="ticket_field" name="tribe-tickets-input[]" value="1436727693">
+		if ( ! isset( $existing[ $_POST['fieldset'] ] ) ) {
+			wp_send_json( $response );
+		}
 
-				<div class="tribe-tickets-input tribe-tickets-input-text">
-					<label for="tickets_attendee_info_field">Label:</label>
-					<input type="text" class="ticket_field" name="tribe-tickets-input-1436727693-label" value="First Name">
-				</div>
+		foreach ( (array) $existing[ $_POST['fieldset'] ] as $field ) {
+			$response['data'] .= $this->get_render_field( $field['type'], $field );
+		}
 
-				<div class="tribe-tickets-input tribe-tickets-input-checkbox tribe-tickets-required">
-					<label class="prompt"><input type="checkbox" class="ticket_field"
-					                             name="tribe-tickets-input-1436727693-required" value="on">
-						Required?
-					</label>
-				</div>
-				<div class="tribe-tickets-delete-field">
-					<a href="#" class="delete-attendee-field">Delete this field</a>
-				</div>
-			</div>
-		</div>
-		<div id="field-1899078293" class="tribe-tickets-attendee-info-active-field postbox closed">
-			<div class="handlediv" title="Click to toggle"><br></div>
-			<h3 class="hndle ui-sortable-handle"><span>Select:</span></h3>
-
-			<div class="inside">
-				<input type="hidden" class="ticket_field" name="tribe-tickets-input-1899078293-type" value="select">
-				<input type="hidden" class="ticket_field" name="tribe-tickets-input[]" value="1899078293">
-
-				<div class="tribe-tickets-input tribe-tickets-input-text">
-					<label for="tickets_attendee_info_field">Label:</label>
-					<input type="text" class="ticket_field" name="tribe-tickets-input-1899078293-label" value="Shirt Size">
-				</div>
-
-				<div class="tribe-tickets-input tribe-tickets-input-textarea">
-					<label for="tickets_attendee_info_field">Options (one per line)</label>
-					<textarea name="tribe-tickets-input-1417191045-options" class="ticket_field" value="" rows="5">
-Small
-Medium
-Large
-					</textarea>
-				</div>
-
-				<div class="tribe-tickets-input tribe-tickets-input-checkbox tribe-tickets-required">
-					<label class="prompt"><input type="checkbox" class="ticket_field"
-					                             name="tribe-tickets-input-1899078293-required" value="on">
-						Required?
-					</label>
-				</div>
-				<div class="tribe-tickets-delete-field">
-					<a href="#" class="delete-attendee-field">Delete this field</a>
-				</div>
-			</div>
-		</div>
-
-		<?php $response['data'] = ob_get_clean();;
 		if ( ! empty( $response['data'] ) ) {
 			$response['success'] = true;
 		}
@@ -168,9 +142,9 @@ Large
 	}
 
 	public function get_render_field( $type, $data = array() ) {
-		$path     = trailingslashit( Tribe__Events__Events::instance()->pluginPath );
-		$name     = $path . 'admin-views/tickets/fields/' . sanitize_file_name( $type ) . '.php';
-		$wrapper  = $path . 'admin-views/tickets/fields/_field.php';
+		$path     = trailingslashit( Tribe__Events__Main::instance()->pluginPath );
+		$name     = $path . 'src/admin-views/tickets/fields/' . sanitize_file_name( $type ) . '.php';
+		$wrapper  = $path . 'src/admin-views/tickets/fields/_field.php';
 
 		if ( ! file_exists( $name ) ) {
 			return '';

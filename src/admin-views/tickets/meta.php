@@ -44,13 +44,17 @@
 					<div class="tribe-tickets-attendee-saved-fields">
 						<div class="tribe-tickets-saved-fields-select">
 							<p>No active fields. Add new fields or</p>
-							<select class="chosen ticket-attendee-info-dropdown" name="ticket-attendee-info[MetaID]"
-							        id="saved_ticket-attendee-info" title="ticket-attendee-info[MetaID]">
-									<option value="0">Start with a saved fieldset...</option>
-									<option data-attendee-group="Racer Info" value="1">Racer Info</option>
+
+							<select class="chosen ticket-attendee-info-dropdown" name="ticket-attendee-info[MetaID]" id="saved_ticket-attendee-info" title="Start with a saved fieldset..." >
+
+									<option selected value="0">Start with a saved fieldset...</option>
+									<?php foreach ( $templates as $template ): ?>
+										<option data-attendee-group="<?php echo esc_attr( $template ); ?>"
+										        value="<?php echo esc_attr( $template ); ?>"><?php echo esc_attr( $template ); ?></option>
+									<?php endforeach; ?>
 							</select>
 						</div>
-
+						
 					</div>
 					<div id="tribe-tickets-attendee-sortables" class="meta-box-sortables ui-sortable">
 						<?php
@@ -62,7 +66,7 @@
 					</div>
 					<div class="tribe-tickets-input tribe-tickets-attendee-save-fieldset">
 						<label>
-							<input type="checkbox" name="save_attendee_fieldset" id="save_attendee_fieldset" class="ticket_field"> Save this fieldset for use on other tickets?
+							<input type="checkbox" name="tribe-tickets-save-fieldset" id="save_attendee_fieldset" value="on" class="ticket_field"> Save this fieldset for use on other tickets?
 						</label>
 					</div>
 					<div class="tribe-tickets-input tribe-tickets-attendee-saved-fieldset-name">

@@ -42,33 +42,31 @@
 
 
 	//load saved fields
-	$( '#tribetickets' ).on( 'change', '#saved_ticket-attendee-info', function() {
+	$( '#tribetickets' ).on( 'change', '#saved_ticket-attendee-info', function () {
 
-			var selected_attendee_id = $(this).val();
+		var selected_attendee_id = $( this ).val();
 
-				console.log(selected_attendee_id);
+		if ( selected_attendee_id && selected_attendee_id != '0' ) {
+			//load the saved fieldset
+			var args = {
+				action: 'tribe-tickets-load-saved-fields',
+				fieldset: selected_attendee_id
+			};
+			$.post(
+				ajaxurl,
+				args,
+				function ( response ) {
+					if ( response.success ) {
+						$( '#tribe-tickets-attendee-sortables' ).append( response.data );
+						maybe_hide_saved_fields_select();
+					}
+				},
+				'json'
+			);
+		}
+		else {
 
-			if ( selected_attendee_id && selected_attendee_id != '0') {
-				//load the saved fieldset
-				var args = {
-					action: 'tribe-tickets-load-saved-fields',
-				};
-				$.post(
-					ajaxurl,
-					args,
-					function ( response ) {
-						if ( response.success ) {
-							$( '#tribe-tickets-attendee-sortables' ).append( response.data );
-							maybe_hide_saved_fields_select();
-
-						}
-					},
-					'json'
-				);
-			}
-			else {
-
-			}
+		}
 	} ).on( 'click', '.postbox .hndle, .postbox .handlediv', function () {
 		var p = $( this ).parent( '.postbox' ), id = p.attr( 'id' );
 
@@ -84,9 +82,7 @@
 	} ).on( 'click', 'a.add-attendee-field', function ( e ) {
 
 		e.preventDefault();
-
 		var $this = $( this );
-
 
 		var args = {
 			action: 'tribe-tickets-info-render-field',
@@ -105,7 +101,6 @@
 			},
 			'json'
 		);
-
 
 
 	} ).on( 'click', 'a.delete-attendee-field', function ( e ) {
