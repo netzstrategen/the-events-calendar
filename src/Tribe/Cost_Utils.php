@@ -33,10 +33,13 @@ class Tribe__Events__Cost_Utils {
 		global $wpdb;
 
 		$costs = $wpdb->get_col( "
-			SELECT DISTINCT meta_value
-			FROM   {$wpdb->postmeta}
-			WHERE  meta_key = '_EventCost'
-			       AND LENGTH( meta_value ) > 0
+			SELECT
+				DISTINCT meta_value
+			FROM
+				{$wpdb->postmeta}
+			WHERE
+				meta_key = '_EventCost'
+				AND LENGTH( meta_value ) > 0;
 		" );
 
 		return $costs;
